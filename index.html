@@ -151,16 +151,16 @@
             .then(data => displayData(data))
     }
 
-    function success(position) {
-        fetchLocationName(position.coords.latitude, position.coords.longitude)
+    async function success(position) {
+        await fetchLocationName(position.coords.latitude, position.coords.longitude)
     }
 
     function failed() {
         console.log("something went wrong");
     }
 
-    function getLocation() {
-        const result = navigator.geolocation.getCurrentPosition(success, failed)
+    async function getLocation() {
+        await navigator.geolocation.getCurrentPosition(success, failed)
     }
 
 
