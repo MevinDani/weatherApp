@@ -16,7 +16,13 @@
             <input id="ctyName" type="text" placeholder="Enter City Name">
             <button onclick="fetchData()"><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
-        <div class="weather">
+        <div class="cityError">
+            <p id="cityError"></p>
+        </div>
+        <div class="location">
+            <button onclick="getLocation()"><i class="fa-solid fa-location-dot fa-3x"></i></button>
+        </div>
+        <div class=" weather">
             <img src="./animated/weather_sunset.svg" class="weatherImg" id="wimg">
             <h2 id="wdesc" class="wdesc"></h2>
             <h1 id="tmp" class="temp"></h1>
@@ -75,11 +81,26 @@
 
 <script>
 
-    function fetchData() {
+    async function fetchData() {
         const city = ctyName.value
-        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=b41ec3be35c7dac8aabbc21ba253137a&units=metric`)
+        await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=b41ec3be35c7dac8aabbc21ba253137a&units=metric`)
             .then(data => data.json())
             .then(data => displayData(data))
+            .catch(e => displayError())
+    }
+
+    function displayError() {
+        cityError.innerHTML = "Invalid city"
+        wdesc.innerHTML = ""
+        tmp.innerHTML = ""
+        cty.innerHTML = ""
+        wnd.innerHTML = ""
+        hmd.innerHTML = ""
+        wth.innerHTML = ""
+        vsb.innerHTML = ""
+        maxTmp.innerHTML = ""
+        minTmp.innerHTML = ""
+        wimg.src = "./animated/icons8-sad.gif"
     }
 
     function displayData(data) {
@@ -92,6 +113,7 @@
         vsb.innerHTML = data.visibility
         maxTmp.innerHTML = data.main.feels_like + "°C"
         minTmp.innerHTML = data.main.temp_min + "°C"
+        cityError.innerHTML = ""
 
         if (data.weather[0].main == "Clouds") {
             wimg.src = "./animated/cloudy-day-1.svg"
@@ -101,12 +123,47 @@
             wimg.src = "./animated/rainy-6.svg"
         } else if (data.weather[0].main == "Drizzle") {
             wimg.src = "./animated/rainy-4.svg"
-        } else if (data.weather[0].main == "Mist") {
+        } else if (data.weather[0].main == "Mist" && data.weather[0].main == "Snow") {
             wimg.src = "./animated/snowy-5.svg"
         } else if (data.weather[0].main == "Haze") {
             wimg.src = "./animated/icons8-haze.gif"
+        } else if (data.weather[0].main == "Thunderstorm") {
+            wimg.src = "./animated/thunder.svg"
+        } else if (data.weather[0].main == "Fog") {
+            wimg.src = "./animated/icons8-fog.gif"
+        } else if (data.weather[0].main == "Dust") {
+            wimg.src = "./animated/icons8-snow-storm.gif"
+        } else {
+            wimg.src = "./animated/cloudy.svg"
         }
     }
+
+    async function fetchLocationName(lat, lon) {
+        await fetch(`http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=5&appid=b41ec3be35c7dac8aabbc21ba253137a`)
+            .then(data => data.json())
+            .then(data => fetchLocData(data[0].name))
+
+    }
+
+    async function fetchLocData(name) {
+        await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${name}&appid=b41ec3be35c7dac8aabbc21ba253137a&units=metric`)
+            .then(data => data.json())
+            .then(data => displayData(data))
+    }
+
+    function success(position) {
+        fetchLocationName(position.coords.latitude, position.coords.longitude)
+    }
+
+    function failed() {
+        console.log("something went wrong");
+    }
+
+    function getLocation() {
+        const result = navigator.geolocation.getCurrentPosition(success, failed)
+    }
+
+
 </script>
 
 </html>
