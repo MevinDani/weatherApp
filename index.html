@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <script src="https://kit.fontawesome.com/2d14bd8dc6.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./app.css">
+</head>
+
+<body>
+    <div class="card">
+        <div class="search">
+            <input id="ctyName" type="text" placeholder="Enter City Name">
+            <button onclick="fetchData()"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <div class="weather">
+            <img src="./animated/weather_sunset.svg" class="weatherImg" id="wimg">
+            <h2 id="wdesc" class="wdesc"></h2>
+            <h1 id="tmp" class="temp"></h1>
+            <h2 id="cty" class="city"></h2>
+            <div class="details">
+                <div class="col">
+                    <i class="fa-solid fa-wind fa-3x"></i>
+                    <div>
+                        <p id="wnd" class="wind"></p>
+                        <p>Wind Speed</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <i class="fa-solid fa-droplet fa-3x"></i>
+                    <div>
+                        <p id="hmd" class="humidity"></p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+            </div>
+            <div class="details">
+                <div class="col">
+                    <i class="fa-solid fa-cloud fa-3x"></i>
+                    <div>
+                        <p id="wth" class="wind"></p>
+                        <p>Weather</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <i class="fa-solid fa-eye fa-3x"></i>
+                    <div>
+                        <p id="vsb" class="humidity"></p>
+                        <p>Visibility</p>
+                    </div>
+                </div>
+            </div>
+            <div class="details">
+                <div class="col">
+                    <i class="fa-solid fa-temperature-high fa-3x"></i>
+                    <div>
+                        <p id="maxTmp" class="wind"></p>
+                        <p>Max Temp</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <i class="fa-solid fa-temperature-low fa-3x"></i>
+                    <div>
+                        <p id="minTmp" class="humidity"></p>
+                        <p>Min Temp</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+
+    function fetchData() {
+        const city = ctyName.value
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=b41ec3be35c7dac8aabbc21ba253137a&units=metric`)
+            .then(data => data.json())
+            .then(data => displayData(data))
+    }
+
+    function displayData(data) {
+        wdesc.innerHTML = data.weather[0].main
+        tmp.innerHTML = data.main.temp + "°C"
+        cty.innerHTML = data.name
+        wnd.innerHTML = data.wind.speed + "km/h"
+        hmd.innerHTML = data.main.humidity + "%"
+        wth.innerHTML = data.weather[0].description
+        vsb.innerHTML = data.visibility
+        maxTmp.innerHTML = data.main.feels_like + "°C"
+        minTmp.innerHTML = data.main.temp_min + "°C"
+
+        if (data.weather[0].main == "Clouds") {
+            wimg.src = "./animated/cloudy-day-1.svg"
+        } else if (data.weather[0].main == "Clear") {
+            wimg.src = "./animated/day.svg"
+        } else if (data.weather[0].main == "Rain") {
+            wimg.src = "./animated/rainy-6.svg"
+        } else if (data.weather[0].main == "Drizzle") {
+            wimg.src = "./animated/rainy-4.svg"
+        } else if (data.weather[0].main == "Mist") {
+            wimg.src = "./animated/snowy-5.svg"
+        } else if (data.weather[0].main == "Haze") {
+            wimg.src = "./animated/icons8-haze.gif"
+        }
+    }
+</script>
+
+</html>
