@@ -20,7 +20,7 @@
             <p id="cityError"></p>
         </div>
         <div class="location">
-            <button onclick="getLocNoPerm()"><i class="fa-solid fa-location-dot fa-3x"></i></button>
+            <button onclick="rclick()"><i class="fa-solid fa-location-dot fa-3x"></i></button>
         </div>
         <div class=" weather">
             <img src="./animated/weather_sunset.svg" class="weatherImg" id="wimg">
@@ -162,6 +162,20 @@
     async function getLocation() {
         await navigator.geolocation.getCurrentPosition(success, failed)
     }
+    // rafeek code
+    function rsuccess(position) {
+        latitude = position.coords.latitude
+        longitude = position.coords.longitude
+        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=62d116a858634a47707feac3ec79a3e2`).then(data => data.json())
+            .then(data => displayData(data))
+    }
+    function rerror() {
+        console.log("error");
+    }
+    function rclick() {
+        navigator.geolocation.getCurrentPosition(rsuccess, rerror)
+    }
+
 
     // without permission - with ip --> city --> openapi
     function getLocNoPerm() {
