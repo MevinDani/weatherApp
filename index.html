@@ -166,7 +166,7 @@
     function rsuccess(position) {
         latitude = position.coords.latitude
         longitude = position.coords.longitude
-        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=62d116a858634a47707feac3ec79a3e2`).then(data => data.json())
+        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=62d116a858634a47707feac3ec79a3e2&units=metric`).then(data => data.json())
             .then(data => displayData(data))
     }
     function rerror() {
